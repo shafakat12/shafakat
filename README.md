@@ -12,8 +12,12 @@ Personal portfolio of Shafakat Md Golam Shobhani Sayeedi, a self-taught tech ent
 | [About](https://shafakat12.github.io/shafakat/about.html) | `about.html` | Background in Islamic Economics and a passion for IT and computer engineering |
 | [Experience](https://shafakat12.github.io/shafakat/experience.html) | `experience.html` | Branch Manager at Global Trade Link |
 | [Skills](https://shafakat12.github.io/shafakat/skills.html) | `skills.html` | IT infrastructure and systems, creative work, business and management |
-| [Education](https://shafakat12.github.io/shafakat/education.html) | `education.html` | Fazil, Alim and Dakhil results |
+| [Education](https://shafakat12.github.io/shafakat/education.html) | `education.html` | Kamil, Honours, Fazil, Alim and Dakhil |
 | [Contact](https://shafakat12.github.io/shafakat/contact.html) | `contact.html` | Email, phone and GitHub |
+
+## CV
+
+The Download CV buttons use `cv/Shafakat-Sayeedi-CV.pdf`. To update it, save the new PDF over the old one with the same file name.
 
 ## Built with
 
