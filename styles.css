@@ -639,6 +639,83 @@ main {
   margin-top: 0.75rem;
 }
 
+/* Work */
+
+.project {
+  padding-block: 1.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+.project:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.project:last-child {
+  padding-bottom: 0;
+}
+
+.project h3 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+/* A small arrow on links that open another site. */
+.arrow-out {
+  display: inline-block;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.75em;
+}
+
+a:hover .arrow-out {
+  color: var(--tech);
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* The .tech or .biz class sets the colour. */
+.badge {
+  padding: 0.0625rem 0.375rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-desc {
+  max-width: 36em;
+  margin-top: 0.75rem;
+  color: var(--muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tags li {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
 /* Skills */
 
 .skill-rows > div {
@@ -654,10 +731,6 @@ main {
 
 .skill-rows dt {
   font-weight: 500;
-}
-
-.skill-rows dt:only-child {
-  grid-column: 1 / -1;
 }
 
 .skill-rows dd {
@@ -715,6 +788,53 @@ main {
   overflow-wrap: break-word;
 }
 
+/* The contact rows above already draw this line. */
+.message-section {
+  border-top: 0;
+}
+
+.message-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field-wide,
+.message-form .button {
+  grid-column: 1 / -1;
+}
+
+.field .label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.field input,
+.field textarea {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--veil);
+  color: var(--ink);
+  font: inherit;
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--ink);
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.message-form .button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
 /* Motion */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -723,12 +843,17 @@ main {
   }
 
   .arrow,
-  .arrow-up {
+  .arrow-up,
+  .arrow-out {
     transition: transform 0.2s ease;
   }
 
   .back-to-top:hover .arrow-up {
     transform: translateY(-2px);
+  }
+
+  a:hover .arrow-out {
+    transform: translate(2px, -2px);
   }
 }
 
@@ -802,6 +927,7 @@ main {
 
 @media (max-width: 40rem) {
   .site-header nav a {
+    padding-inline: 0.125rem;
     font-size: 0.8125rem;
   }
 
@@ -846,12 +972,23 @@ main {
   .contact-rows dd {
     grid-column: 1;
   }
+
+  .message-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
-@media (max-width: 22.5rem) {
+@media (max-width: 23rem) {
   .site-header nav a {
-    padding-inline: 0.125rem;
     font-size: 0.75rem;
+  }
+}
+
+/* The smallest phones: all seven links can't fit on one line, so use two even rows. */
+@media (max-width: 21.5rem) {
+  .site-header ul {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
   }
 }
 
