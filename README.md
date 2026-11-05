@@ -21,7 +21,7 @@ Personal portfolio of Shafakat Md Golam Shobhani Sayeedi, a self-taught IT pract
 The form on the Contact page sends messages to my email through [Web3Forms](https://web3forms.com/), because GitHub Pages can't send email by itself.
 
 1. Create an access key at [web3forms.com](https://web3forms.com/#start) using the email address that should receive messages. The key arrives by email.
-2. In `contact.html`, replace `YOUR_ACCESS_KEY_HERE` with the key. It is safe to keep in public HTML.
+2. In `contact.html`, put the key in the `access_key` field. It is safe to keep in public HTML.
 3. Publish the site and send a test message from the live Contact page.
 
 After a message is sent, visitors land on `message-sent.html`. Replying to a message in your inbox goes to the address the visitor entered.
