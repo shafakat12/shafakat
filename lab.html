@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab | Shafakat Md Golam Shobhani Sayeedi</title>
+  <meta name="description" content="Lab by Shafakat Md Golam Shobhani Sayeedi: write-ups of projects, papers, benchmarks and experiments.">
+  <meta name="author" content="Shafakat Md Golam Shobhani Sayeedi">
+  <meta property="og:image" content="https://shafakat12.github.io/shafakat/images/profile_picture.jpeg">
+  <meta name="theme-color" content="#102b21">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="nav.js"></script>
+  <script>
+    /* Swarm rebuild: hide the first screen before it paints, but only when the intro will play. */
+    (function () {
+      try {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!window.Animation || !("finished" in Animation.prototype)) return;
+      } catch (e) {}
+      var root = document.documentElement;
+      root.classList.add("swarm-pending");
+      /* Failsafe in case swarm-rebuild.js never runs. */
+      window.swarmFailsafe = setTimeout(function () { root.classList.remove("swarm-pending"); }, 6000);
+    })();
+  </script>
+  <script src="swarm-rebuild.js" defer></script>
+  <script src="glass-tilt.js" defer></script>
+  <script src="lab.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap" data-swarm>
+      <span class="brand" data-swarm>Shafakat Sayeedi</span>
+      <nav aria-label="Main" data-swarm>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+        <ul id="site-menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="experience.html">Experience</a></li>
+          <li><a href="work.html">Work</a></li>
+          <li><a href="lab.html" aria-current="page">Lab</a></li>
+          <li><a href="skills.html">Skills</a></li>
+          <li><a href="education.html">Education</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <header class="page-head">
+      <h1 data-swarm>Lab</h1>
+      <p data-swarm>Projects, papers, benchmarks and experiments: what I'm building, testing and learning.</p>
+    </header>
+
+    <!-- Filter chips. lab.js shows them; without JavaScript they stay hidden and every post shows. -->
+    <div class="filters" role="group" aria-label="Filter posts by type" data-swarm hidden>
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="project" aria-pressed="false">Projects</button>
+      <button type="button" data-filter="paper" aria-pressed="false">Papers</button>
+      <button type="button" data-filter="benchmark" aria-pressed="false">Benchmarks</button>
+      <button type="button" data-filter="experiment" aria-pressed="false">Experiments</button>
+    </div>
+    <p class="lab-status visually-hidden" aria-live="polite"></p>
+
+    <!-- Posts, newest first. To add one, copy the card below to the top of this list,
+         uncomment it and fill it in. See "Publishing a post" in README.md.
+
+         data-type must be one of: project, paper, benchmark, experiment.
+         The badge class and text match it:
+           project    -> class="badge type-project"    PROJECT
+           paper      -> class="badge type-paper"      PAPER
+           benchmark  -> class="badge type-benchmark"  BENCHMARK
+           experiment -> class="badge type-experiment" EXPERIMENT
+
+      <li data-type="benchmark">
+        <a class="post-card" data-swarm href="posts/2026-11-20-local-llm-benchmark.html">
+          <div>
+            <p class="post-meta">
+              <span class="badge type-benchmark">Benchmark</span>
+              <time class="label" datetime="2026-11-20">20 Nov 2026</time>
+              <span class="label">6 min read</span>
+            </p>
+            <h2>The post title</h2>
+            <p class="post-summary">One or two lines saying what the post is about and what you found.</p>
+            <ul class="tags">
+              <li>Tag one</li>
+              <li>Tag two</li>
+            </ul>
+          </div>
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </li>
+    -->
+    <ol class="post-list">
+    </ol>
+
+    <!-- Shown while there are no posts. It also hides itself once the list has a post,
+         but delete it when you publish your first one. -->
+    <p class="lab-empty" data-swarm>First posts are on the way.</p>
+
+    <!-- Shown by lab.js when posts exist but none match the chosen filter. -->
+    <p class="lab-none" hidden></p>
+
+    <a data-swarm class="next-link" href="skills.html"><span class="label">Next</span> <strong>Skills</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand">Shafakat Sayeedi</span>
+          <p>IT, Systems &amp; Branch Management</p>
+          <div class="footer-actions">
+            <a class="footer-button" href="contact.html">Get in touch</a>
+            <a class="footer-button" href="cv/Shafakat-Sayeedi-CV.pdf" download="Shafakat-Sayeedi-CV.pdf" type="application/pdf">Download CV</a>
+          </div>
+        </div>
+        <div>
+          <h2 class="footer-heading">Explore</h2>
+          <nav aria-label="Footer">
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="experience.html">Experience</a></li>
+              <li><a href="work.html">Work</a></li>
+              <li><a href="lab.html" aria-current="page">Lab</a></li>
+              <li><a href="skills.html">Skills</a></li>
+              <li><a href="education.html">Education</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div>
+          <h2 class="footer-heading">Contact</h2>
+          <ul class="footer-contact">
+            <li>Dhaka, Bangladesh</li>
+            <li>Phone: <a href="tel:+8801724814108">+880 1724-814108</a></li>
+            <li>Phone: <a href="tel:+8801996073758">+880 1996-073758</a></li>
+            <li>Email: <a href="mailto:golamshafakat2000@gmail.com">golamshafakat2000@gmail.com</a></li>
+            <li>GitHub: <a href="https://github.com/shafakat12">github.com/shafakat12</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <button class="swarm-replay" type="button" hidden>Rebuild <span aria-hidden="true">&#8635;</span></button>
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

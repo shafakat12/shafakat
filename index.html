@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script src="nav.js"></script>
   <script>
     /* Swarm rebuild: hide the first screen before it paints, but only when the intro will play. */
     (function () {
@@ -39,11 +40,13 @@
     <div class="wrap" data-swarm>
       <span class="brand" data-swarm>Shafakat Sayeedi</span>
       <nav aria-label="Main" data-swarm>
-        <ul>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+        <ul id="site-menu">
           <li><a href="index.html" aria-current="page">Home</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="experience.html">Experience</a></li>
           <li><a href="work.html">Work</a></li>
+          <li><a href="lab.html">Lab</a></li>
           <li><a href="skills.html">Skills</a></li>
           <li><a href="education.html">Education</a></li>
           <li><a href="contact.html">Contact</a></li>
@@ -140,6 +143,11 @@
         <p>Websites I've designed and built, plus home networking, self-hosted servers and NAS storage.</p>
         <span class="arrow" aria-hidden="true">&rarr;</span>
       </a>
+      <a class="index-row" data-swarm href="lab.html">
+        <h2>Lab</h2>
+        <p>Projects, papers, benchmarks and experiments I'm working on.</p>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </a>
       <a class="index-row" data-swarm href="skills.html">
         <h2>Skills</h2>
         <p>Servers, networking, hardware, web design, video production and business strategy.</p>
@@ -172,6 +180,7 @@
               <li><a href="about.html">About</a></li>
               <li><a href="experience.html">Experience</a></li>
               <li><a href="work.html">Work</a></li>
+              <li><a href="lab.html">Lab</a></li>
               <li><a href="skills.html">Skills</a></li>
               <li><a href="education.html">Education</a></li>
               <li><a href="contact.html">Contact</a></li>

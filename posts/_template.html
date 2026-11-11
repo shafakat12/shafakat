@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ============================================================
+       POST TEMPLATE
+       1. Copy this file to posts/YYYY-MM-DD-slug.html
+          (for example posts/2026-11-20-local-llm-benchmark.html).
+       2. Replace everything marked "REPLACE" and delete the parts you don't need.
+       3. Delete this comment and the "noindex" line below.
+       See "Publishing a post" in README.md for the full checklist.
+       ============================================================ -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- DELETE in a real post. It stops search engines listing this template. -->
+  <meta name="robots" content="noindex">
+
+  <!-- REPLACE: the post title, then the site name. -->
+  <title>Post title | Lab | Shafakat Md Golam Shobhani Sayeedi</title>
+  <!-- REPLACE: one sentence about the post, for search results and link previews. -->
+  <meta name="description" content="One sentence about what this post covers and what it found.">
+  <meta name="author" content="Shafakat Md Golam Shobhani Sayeedi">
+
+  <!-- Link previews (WhatsApp, Facebook, LinkedIn). REPLACE the title, description,
+       file name in og:url, and the date in article:published_time (YYYY-MM-DD). -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Post title">
+  <meta property="og:description" content="One sentence about what this post covers and what it found.">
+  <meta property="og:url" content="https://shafakat12.github.io/shafakat/posts/YYYY-MM-DD-slug.html">
+  <meta property="og:image" content="https://shafakat12.github.io/shafakat/images/profile_picture.jpeg">
+  <meta property="article:published_time" content="2026-01-01">
+  <meta property="article:author" content="Shafakat Md Golam Shobhani Sayeedi">
+
+  <meta name="theme-color" content="#102b21">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../nav.js"></script>
+  <script src="../lab.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap">
+      <span class="brand">Shafakat Sayeedi</span>
+      <nav aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+        <ul id="site-menu">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience.html">Experience</a></li>
+          <li><a href="../work.html">Work</a></li>
+          <li><a href="../lab.html" aria-current="page">Lab</a></li>
+          <li><a href="../skills.html">Skills</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <article>
+      <!-- ========== Post header ========== -->
+      <header class="post-head">
+        <p class="post-meta">
+          <!-- REPLACE the badge: one of
+               <span class="badge type-project">Project</span>
+               <span class="badge type-paper">Paper</span>
+               <span class="badge type-benchmark">Benchmark</span>
+               <span class="badge type-experiment">Experiment</span> -->
+          <span class="badge type-benchmark">Benchmark</span>
+          <!-- REPLACE: datetime is YYYY-MM-DD; the text is how it reads, like "20 Nov 2026". -->
+          <time class="label" datetime="2026-01-01">1 Jan 2026</time>
+          <!-- REPLACE: about 220 words per minute, rounded up. -->
+          <span class="label">6 min read</span>
+        </p>
+        <!-- REPLACE: the title. -->
+        <h1>Post title goes here</h1>
+        <!-- REPLACE: one line saying what the post is about. -->
+        <p class="post-summary">One line saying what this post is about and what you found.</p>
+        <!-- REPLACE: a few short tags. -->
+        <ul class="tags">
+          <li>Tag one</li>
+          <li>Tag two</li>
+          <li>Tag three</li>
+        </ul>
+
+        <!-- Optional downloads. Delete the whole block if there is nothing to download.
+             Files go in posts/files/, so the link is "files/your-file.pdf".
+             Links to other sites get target="_blank" rel="noopener" and the ↗ arrow. -->
+        <div class="post-downloads">
+          <a class="download" href="files/your-paper.pdf" download>Paper (PDF) <span aria-hidden="true">&darr;</span></a>
+          <a class="download" href="files/your-dataset.csv" download>Dataset <span aria-hidden="true">&darr;</span></a>
+          <a class="download" href="https://github.com/shafakat12" target="_blank" rel="noopener">Code <span class="arrow-out" aria-hidden="true">&nearr;</span></a>
+        </div>
+      </header>
+
+      <!-- ========== Post body ==========
+           Everything below shows each style once. Keep what you need, delete the rest. -->
+      <div class="post-body">
+
+        <!-- For papers: the abstract. Delete for other posts. -->
+        <section class="abstract" aria-labelledby="abstract-title">
+          <h2 id="abstract-title" class="abstract-title">Abstract</h2>
+          <p>A short summary of the paper: the question, how you approached it, and the main result.</p>
+        </section>
+
+        <!-- For benchmarks and experiments: what it was tested on. Delete for other posts. -->
+        <dl class="setup">
+          <div><dt>Hardware</dt><dd>CPU, GPU, RAM and storage used</dd></div>
+          <div><dt>Software</dt><dd>Operating system and the exact versions of the tools tested</dd></div>
+          <div><dt>Dataset</dt><dd>What was measured, and where it came from</dd></div>
+          <div><dt>Date tested</dt><dd><time datetime="2026-01-01">1 Jan 2026</time></dd></div>
+        </dl>
+
+        <!-- Headings: give each one an id (lowercase, hyphens) and a matching # link,
+             so readers can share a link straight to that section. -->
+        <h2 id="introduction">Introduction <a class="anchor" href="#introduction" aria-label="Link to this section">#</a></h2>
+        <p>Write paragraphs like this one. Links look <a href="../lab.html">like this</a>, and <code>inline code</code> looks like this.</p>
+        <ul>
+          <li>A bulleted list item</li>
+          <li>Another item</li>
+        </ul>
+        <ol>
+          <li>A numbered step</li>
+          <li>The next step</li>
+        </ol>
+        <blockquote>
+          <p>A quotation, or a sentence you want to stand out.</p>
+        </blockquote>
+
+        <h3 id="a-smaller-heading">A smaller heading <a class="anchor" href="#a-smaller-heading" aria-label="Link to this section">#</a></h3>
+        <p>Use h3 for parts inside a section.</p>
+
+        <!-- Code: put the language in data-lang. lab.js adds the Copy button.
+             Write < as &lt; and & as &amp; inside code. -->
+        <pre data-lang="bash"><code>sudo apt update &amp;&amp; sudo apt install -y example-package
+example-command --input data.csv --output results.json --threads 8 --very-long-option-to-show-sideways-scrolling</code></pre>
+
+        <!-- Results table. Keep the table-wrap div: it scrolls sideways on phones.
+             class="num" right-aligns a number column; class="best" highlights the winner.
+             REPLACE these example rows with your own results. -->
+        <h2 id="results">Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+        <div class="table-wrap">
+          <table>
+            <caption>What the table shows, and the units</caption>
+            <thead>
+              <tr><th scope="col">Option</th><th scope="col" class="num">Speed (items/s)</th><th scope="col" class="num">Memory (GB)</th><th scope="col" class="num">Score</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Option A</th><td class="num best">48.2</td><td class="num">6.1</td><td class="num">71.5</td></tr>
+              <tr><th scope="row">Option B</th><td class="num">39.7</td><td class="num best">4.3</td><td class="num">69.8</td></tr>
+              <tr><th scope="row">Option C</th><td class="num">31.0</td><td class="num">7.9</td><td class="num best">74.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Figure: the image links to the full-size file so readers can open it.
+             Put images in posts/files/. REPLACE the link with files/your-figure.png, and the
+             long src="data:..." placeholder with the same path. Then REPLACE the alt text,
+             the width and height (the image's size in pixels) and the caption. -->
+        <figure>
+          <a href="files/your-figure.png"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'%3E%3Crect width='1200' height='675' fill='%230d2219'/%3E%3Ctext x='600' y='352' fill='%23b4c9bd' font-family='sans-serif' font-size='40' text-anchor='middle'%3EYour figure here%3C/text%3E%3C/svg%3E" alt="Describe what the image shows" loading="lazy" width="1200" height="675"></a>
+          <figcaption>Figure 1. What the figure shows.</figcaption>
+        </figure>
+
+        <!-- Callouts: note (extra information), warning (something to be careful about),
+             result (the key finding). -->
+        <aside class="callout note">
+          <p class="callout-title">Note</p>
+          <p>Extra information that helps, but isn't the main point.</p>
+        </aside>
+        <aside class="callout warning">
+          <p class="callout-title">Warning</p>
+          <p>Something to be careful about.</p>
+        </aside>
+        <aside class="callout result">
+          <p class="callout-title">Result</p>
+          <p>The key finding, in one or two sentences.</p>
+        </aside>
+
+        <!-- For papers: the references. They are numbered automatically. Delete for other posts. -->
+        <h2 id="references">References <a class="anchor" href="#references" aria-label="Link to this section">#</a></h2>
+        <ol class="references">
+          <li>Author, A. (Year). <em>Title of the work</em>. Publisher or journal. <a href="https://example.com">https://example.com</a></li>
+          <li>Author, B., &amp; Author, C. (Year). Title of the article. <em>Journal Name</em>, volume(issue), pages.</li>
+        </ol>
+      </div>
+    </article>
+
+    <!-- ========== More posts ==========
+         REPLACE the Previous and Next links with the posts before and after this one
+         (by date). Delete a link if there is no post on that side. -->
+    <nav class="post-nav" aria-label="More posts">
+      <a class="post-back" href="../lab.html"><span aria-hidden="true">&larr;</span> Back to Lab</a>
+      <div class="post-nav-links">
+        <a class="next-link post-prev" href="../lab.html"><span class="arrow" aria-hidden="true">&larr;</span> <span class="label">Previous</span> <strong>Older post title</strong></a>
+        <a class="next-link post-next" href="../lab.html"><span class="label">Next</span> <strong>Newer post title</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand">Shafakat Sayeedi</span>
+          <p>IT, Systems &amp; Branch Management</p>
+          <div class="footer-actions">
+            <a class="footer-button" href="../contact.html">Get in touch</a>
+            <a class="footer-button" href="../cv/Shafakat-Sayeedi-CV.pdf" download="Shafakat-Sayeedi-CV.pdf" type="application/pdf">Download CV</a>
+          </div>
+        </div>
+        <div>
+          <h2 class="footer-heading">Explore</h2>
+          <nav aria-label="Footer">
+            <ul class="footer-links">
+              <li><a href="../index.html">Home</a></li>
+              <li><a href="../about.html">About</a></li>
+              <li><a href="../experience.html">Experience</a></li>
+              <li><a href="../work.html">Work</a></li>
+              <li><a href="../lab.html" aria-current="page">Lab</a></li>
+              <li><a href="../skills.html">Skills</a></li>
+              <li><a href="../education.html">Education</a></li>
+              <li><a href="../contact.html">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div>
+          <h2 class="footer-heading">Contact</h2>
+          <ul class="footer-contact">
+            <li>Dhaka, Bangladesh</li>
+            <li>Phone: <a href="tel:+8801724814108">+880 1724-814108</a></li>
+            <li>Phone: <a href="tel:+8801996073758">+880 1996-073758</a></li>
+            <li>Email: <a href="mailto:golamshafakat2000@gmail.com">golamshafakat2000@gmail.com</a></li>
+            <li>GitHub: <a href="https://github.com/shafakat12">github.com/shafakat12</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
