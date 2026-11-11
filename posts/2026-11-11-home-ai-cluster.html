@@ -54,7 +54,7 @@
         <p class="post-meta">
           <span class="badge type-project">Project</span>
           <time class="label" datetime="2026-11-11">11 Nov 2026</time>
-          <span class="label">7 min read</span>
+          <span class="label">8 min read</span>
         </p>
         <h1>Home AI Cluster: a private AI server built from spare PCs</h1>
         <p class="post-summary">A self-hosted AI system for my family. My small Ubuntu server and my gaming PC share their graphics cards over the home network, so together they run AI models that neither could run alone.</p>
@@ -79,6 +79,30 @@
           <div><dt>Published</dt><dd><time datetime="2026-11-11">11 Nov 2026</time></dd></div>
         </dl>
 
+        <h2 id="start-here">Start here: what's where <a class="anchor" href="#start-here" aria-label="Link to this section">#</a></h2>
+        <p>Once it's installed there are two web pages. The family only ever needs the first one.</p>
+        <ul>
+          <li><strong>The chat</strong> on port 3000 (Open WebUI): everyone at home logs in with their own account and chats, sends pictures, searches the web or makes images.</li>
+          <li><strong>The control panel</strong> on port 8091: the admin page. It has six tabs:</li>
+        </ul>
+        <ul>
+          <li><strong>Models:</strong> weekly suggestions that fit your GPUs, search Hugging Face, see if a model fits, then add, rename or remove models and follow the downloads.</li>
+          <li><strong>GPUs:</strong> every graphics card in the house. Set each one to Use, Standby or Off, set up auto-off while a PC is busy, Forget an old PC, or stop the running models.</li>
+          <li><strong>Health:</strong> live CPU, memory, GPU, temperatures, network, services, and the SMART health of every drive.</li>
+          <li><strong>Storage:</strong> move the models and backups to a folder, another drive or a RAID. Erasing a drive needs &ldquo;ERASE&rdquo; plus the admin password.</li>
+          <li><strong>Add a PC:</strong> the download link for a Windows PC, the command for a Linux PC, and the GPU PCs the server can see.</li>
+          <li><strong>Settings:</strong> Telegram alerts, which devices may use the API, the admin password and the logged-in devices.</li>
+        </ul>
+        <p>On the GPUs tab, each graphics card shows a status:</p>
+        <ul>
+          <li><em>online</em>: ready to use.</li>
+          <li><em>in use by a model</em>: busy right now, not broken.</li>
+          <li><em>slow to answer</em>: usually Wi-Fi or a busy PC.</li>
+          <li><em>offline</em>: the PC is off. An offline PC can be removed with <em>Forget</em>, for example after it got a new IP address.</li>
+          <li><em>off automatically</em>: auto-off has handed the GPU back to its PC for now.</li>
+        </ul>
+        <p>Every button and status is explained in <a href="https://github.com/shafakat12/home-ai-cluster/blob/main/docs/control-panel.md" target="_blank" rel="noopener">the control panel guide on GitHub</a>.</p>
+
         <h2 id="why">Why I built it <a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
         <p>I wanted one AI that everyone in my family could use for chat, coding help and pictures, running on my own hardware, so the models and the chats stay at home and nobody needs an account somewhere else.</p>
         <p>The problem: good models need a lot of GPU memory. My server has a 6 GB graphics card and my gaming PC has an 11 GB one. A 20-billion-parameter model doesn't fit on either card. It does fit on both together. So the core idea of this project is <strong>GPU pooling</strong>: split one model across the GPUs of several PCs over the home network, and make the whole thing simple enough that the rest of the family never has to think about it.</p>
@@ -97,7 +121,7 @@
           <li><strong>One server runs everything.</strong> An Ubuntu machine runs the chat website, the model manager, web search, the control panel and the health checks.</li>
           <li><strong>Other PCs lend their GPUs.</strong> On a Windows PC you download one <code>.bat</code> file from the server and double-click it. It installs a small llama.cpp <em>rpc-server</em> that starts with Windows, and the server finds the new GPU by itself.</li>
           <li><strong>Big models use all GPUs, small ones stay on one.</strong> Small models stay loaded on the server for instant answers. Big models are split across every GPU that is allowed.</li>
-          <li><strong>Gaming still comes first.</strong> Each GPU can be set to <em>Use</em>, <em>Standby</em> (only for big models) or <em>Off</em> from the control panel, for example while someone is playing on that PC.</li>
+          <li><strong>Gaming still comes first.</strong> Each GPU can be set to <em>Use</em>, <em>Standby</em> (only for big models) or <em>Off</em>. It also happens by itself: every GPU PC reports how much its own programs use its GPU. Above 40% (for example a game), the server switches that GPU off and stops the models using it, and 5 minutes after the PC is quiet it takes the GPU back.</li>
           <li><strong>“auto” and “team” models.</strong> <em>auto</em> picks the right model for each message: pictures go to a vision model, code to a coding model, quick chat to a small fast model. <em>team</em> lets two models answer and a third combine the best answer.</li>
         </ol>
 
@@ -127,6 +151,7 @@
           <li><strong>Add models from the web:</strong> search Hugging Face in the control panel, see whether a model fits your GPUs, then click Add. A weekly check suggests newer models that fit.</li>
           <li><strong>Private web search:</strong> a self-hosted SearXNG lets the AI look things up without accounts or tracking.</li>
           <li><strong>Live health page:</strong> CPU, RAM, GPU temperatures, network, services and drive SMART data, refreshed every 0.5 seconds.</li>
+          <li><strong>Auto-off while gaming:</strong> a GPU PC's GPU is switched off for the AI while the PC itself needs it, and comes back afterwards. A GPU PC that is busy with a model shows as "in use", not offline.</li>
           <li><strong>Drives and RAID:</strong> keep models in any folder, on a spare drive, or on several drives as RAID 0, 1, 5 or 10, set up from the control panel.</li>
           <li><strong>Alerts and backups:</strong> Telegram messages about disk, RAID or service problems, and a nightly backup of chats and settings.</li>
           <li><strong>Coding assistants:</strong> an OpenAI- and Anthropic-compatible API for VS Code extensions and scripts.</li>
@@ -134,23 +159,11 @@
         </ul>
 
         <h2 id="control-panel">The control panel <a class="anchor" href="#control-panel" aria-label="Link to this section">#</a></h2>
-        <p>Everything is managed from one web page: a single-file Python app that uses only the standard library. It works on any device at home after logging in.</p>
-        <div class="table-wrap">
-          <table>
-            <caption>Tabs of the control panel</caption>
-            <thead>
-              <tr><th scope="col">Tab</th><th scope="col">What it does</th></tr>
-            </thead>
-            <tbody>
-              <tr><th scope="row">Models</th><td>Search Hugging Face, check the fit, add, rename or remove models, follow downloads</td></tr>
-              <tr><th scope="row">GPUs</th><td>Every GPU in the house with live memory use; set Use / Standby / Off and give each a name</td></tr>
-              <tr><th scope="row">Health</th><td>Live server status, services, drive SMART data with self-tests, RAID state</td></tr>
-              <tr><th scope="row">Storage</th><td>Choose a folder, one drive or a RAID for the models; erasing needs “ERASE” plus the admin password</td></tr>
-              <tr><th scope="row">Add a PC</th><td>The download link and the Linux command for new GPU PCs</td></tr>
-              <tr><th scope="row">Settings</th><td>Telegram alerts, devices allowed to use the API, password, logged-in devices</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <p>Everything is managed from one web page: a single-file Python app that uses only the standard library. It works on any device at home after logging in. What each tab does is in <a href="#start-here">Start here</a> at the top.</p>
+        <figure>
+          <a href="files/home-ai-cluster-control-panel.png"><img src="files/home-ai-cluster-control-panel.png" alt="The Health tab of the control panel: live CPU, memory, GPU, temperature, network and storage cards, and a list of services that are all active." loading="lazy" width="1600" height="1447"></a>
+          <figcaption>Figure 2. The Health tab, with real values from my server. It refreshes every half second.</figcaption>
+        </figure>
 
         <h2 id="security">Security decisions <a class="anchor" href="#security" aria-label="Link to this section">#</a></h2>
         <ul>
@@ -178,7 +191,7 @@
         <pre data-lang="bash"><code>git clone https://github.com/shafakat12/home-ai-cluster.git
 cd home-ai-cluster
 sudo bash install.sh</code></pre>
-        <p>The installer finds the GPU, picks starter models that fit, asks where to store them, and at the end prints the addresses and a one-time setup code for the control panel. To add a Windows PC, open <code>http://SERVER-IP:8090/add-this-pc.bat</code> on it and double-click the file.</p>
+        <p>The installer finds the GPU, picks starter models that fit, asks where to store them, and at the end prints the addresses and a one-time setup code for the control panel. Reserve the IP addresses of the server and the GPU PCs in your router: the setup finds and trusts devices by their address. To add a Windows PC, open <code>http://SERVER-IP:8090/add-this-pc.bat</code> on it and double-click the file.</p>
 
         <aside class="callout warning">
           <p class="callout-title">Beta</p>
