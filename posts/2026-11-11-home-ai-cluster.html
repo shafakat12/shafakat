@@ -75,12 +75,12 @@
         <dl class="setup">
           <div><dt>Hardware</dt><dd>Ubuntu server with a GTX 1660 Super (6 GB), Windows gaming PC with an RTX 2080 Ti (11 GB), SSD plus a 1 TB HDD, wired home network</dd></div>
           <div><dt>Software</dt><dd>llama.cpp (RPC), llama-swap, Open WebUI, SearXNG, Docker, ComfyUI; my own scripts in Bash, Python and PowerShell</dd></div>
-          <div><dt>Status</dt><dd>Beta: runs every day on my home server; open source under the MIT license</dd></div>
+          <div><dt>Status</dt><dd>Beta: runs on my home server; open source under the MIT license</dd></div>
           <div><dt>Published</dt><dd><time datetime="2026-11-11">11 Nov 2026</time></dd></div>
         </dl>
 
         <h2 id="why">Why I built it <a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
-        <p>AI chat is useful for everyone in my family, from homework to work emails to coding. But subscriptions add up, and every message goes to someone else's servers. I wanted the same experience running at home, private by default, on hardware I already had.</p>
+        <p>I wanted one AI that everyone in my family could use for chat, coding help and pictures, running on my own hardware, so the models and the chats stay at home and nobody needs an account somewhere else.</p>
         <p>The problem: good models need a lot of GPU memory. My server has a 6 GB graphics card and my gaming PC has an 11 GB one. A 20-billion-parameter model doesn't fit on either card. It does fit on both together. So the core idea of this project is <strong>GPU pooling</strong>: split one model across the GPUs of several PCs over the home network, and make the whole thing simple enough that the rest of the family never has to think about it.</p>
 
         <aside class="callout result">
@@ -182,7 +182,7 @@ sudo bash install.sh</code></pre>
 
         <aside class="callout warning">
           <p class="callout-title">Beta</p>
-          <p>It runs every day on my own home server. A full install on a fresh machine and creating a RAID on real drives are still being tested.</p>
+          <p>It runs on my own home server. A full install on a fresh machine and creating a RAID on real drives are still being tested.</p>
         </aside>
 
         <p>The project is open source under the MIT license. It is built on <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">llama.cpp</a>, <a href="https://github.com/mostlygeek/llama-swap" target="_blank" rel="noopener">llama-swap</a>, <a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">Open WebUI</a>, <a href="https://github.com/searxng/searxng" target="_blank" rel="noopener">SearXNG</a> and <a href="https://github.com/comfyanonymous/ComfyUI" target="_blank" rel="noopener">ComfyUI</a>, each under its own license.</p>
