@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home AI Cluster: a private AI server from spare PCs | Lab | Shafakat Md Golam Shobhani Sayeedi</title>
+  <meta name="description" content="How I built a private AI server for my family from spare PCs: GPU pooling over the home network with llama.cpp, a family chat website, private web search and a live control panel. Open source.">
+  <meta name="author" content="Shafakat Md Golam Shobhani Sayeedi">
+  <!-- Link previews (WhatsApp, Facebook, LinkedIn). -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Home AI Cluster: a private AI server from spare PCs">
+  <meta property="og:description" content="How I built a private AI server for my family from spare PCs: GPU pooling over the home network with llama.cpp, a family chat website, private web search and a live control panel. Open source.">
+  <meta property="og:url" content="https://shafakat12.github.io/shafakat/posts/2026-11-11-home-ai-cluster.html">
+  <meta property="og:image" content="https://shafakat12.github.io/shafakat/posts/files/home-ai-cluster-cover.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-11-11">
+  <meta property="article:author" content="Shafakat Md Golam Shobhani Sayeedi">
+
+  <meta name="theme-color" content="#102b21">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../nav.js"></script>
+  <script src="../lab.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap">
+      <span class="brand">Shafakat Sayeedi</span>
+      <nav aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+        <ul id="site-menu">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience.html">Experience</a></li>
+          <li><a href="../work.html">Work</a></li>
+          <li><a href="../lab.html" aria-current="page">Lab</a></li>
+          <li><a href="../skills.html">Skills</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+    <main id="main" class="wrap">
+    <article>
+      <header class="post-head">
+        <p class="post-meta">
+          <span class="badge type-project">Project</span>
+          <time class="label" datetime="2026-11-11">11 Nov 2026</time>
+          <span class="label">7 min read</span>
+        </p>
+        <h1>Home AI Cluster: a private AI server built from spare PCs</h1>
+        <p class="post-summary">A self-hosted AI system for my family. My small Ubuntu server and my gaming PC share their graphics cards over the home network, so together they run AI models that neither could run alone.</p>
+        <ul class="tags">
+          <li>Self-hosting</li>
+          <li>AI</li>
+          <li>Linux</li>
+          <li>Networking</li>
+          <li>Open source</li>
+        </ul>
+        <div class="post-downloads">
+          <a class="download" href="https://github.com/shafakat12/home-ai-cluster" target="_blank" rel="noopener">Code on GitHub <span class="arrow-out" aria-hidden="true">&nearr;</span></a>
+        </div>
+      </header>
+
+      <div class="post-body">
+
+        <dl class="setup">
+          <div><dt>Hardware</dt><dd>Ubuntu server with a GTX 1660 Super (6 GB), Windows gaming PC with an RTX 2080 Ti (11 GB), SSD plus a 1 TB HDD, wired home network</dd></div>
+          <div><dt>Software</dt><dd>llama.cpp (RPC), llama-swap, Open WebUI, SearXNG, Docker, ComfyUI; my own scripts in Bash, Python and PowerShell</dd></div>
+          <div><dt>Status</dt><dd>Beta: runs every day on my home server; open source under the MIT license</dd></div>
+          <div><dt>Published</dt><dd><time datetime="2026-11-11">11 Nov 2026</time></dd></div>
+        </dl>
+
+        <h2 id="why">Why I built it <a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
+        <p>AI chat is useful for everyone in my family, from homework to work emails to coding. But subscriptions add up, and every message goes to someone else's servers. I wanted the same experience running at home, private by default, on hardware I already had.</p>
+        <p>The problem: good models need a lot of GPU memory. My server has a 6 GB graphics card and my gaming PC has an 11 GB one. A 20-billion-parameter model doesn't fit on either card. It does fit on both together. So the core idea of this project is <strong>GPU pooling</strong>: split one model across the GPUs of several PCs over the home network, and make the whole thing simple enough that the rest of the family never has to think about it.</p>
+
+        <aside class="callout result">
+          <p class="callout-title">Result</p>
+          <p>The 6 GB and 11 GB cards in two different PCs work as one. Together they run gpt-oss 20B at home at about 57–71 tokens per second (measured on my setup), and everyone in the house can use it from a phone or laptop.</p>
+        </aside>
+
+        <h2 id="how-it-works">How it works <a class="anchor" href="#how-it-works" aria-label="Link to this section">#</a></h2>
+        <figure>
+          <a href="files/home-ai-cluster-architecture.png"><img src="files/home-ai-cluster-architecture.png" alt="Diagram: phones, laptops and coding tools connect to the Ubuntu AI server, which runs Open WebUI, llama-swap, llama.cpp, SearXNG, the control panel and health checks. The server uses the GPUs of a gaming PC and other PCs over the home network." loading="lazy" width="1920" height="940"></a>
+          <figcaption>Figure 1. Family devices talk to one server. When a model is too big for the server's GPU, llama.cpp splits it across the GPUs of the other PCs over the network.</figcaption>
+        </figure>
+        <ol>
+          <li><strong>One server runs everything.</strong> An Ubuntu machine runs the chat website, the model manager, web search, the control panel and the health checks.</li>
+          <li><strong>Other PCs lend their GPUs.</strong> On a Windows PC you download one <code>.bat</code> file from the server and double-click it. It installs a small llama.cpp <em>rpc-server</em> that starts with Windows, and the server finds the new GPU by itself.</li>
+          <li><strong>Big models use all GPUs, small ones stay on one.</strong> Small models stay loaded on the server for instant answers. Big models are split across every GPU that is allowed.</li>
+          <li><strong>Gaming still comes first.</strong> Each GPU can be set to <em>Use</em>, <em>Standby</em> (only for big models) or <em>Off</em> from the control panel, for example while someone is playing on that PC.</li>
+          <li><strong>“auto” and “team” models.</strong> <em>auto</em> picks the right model for each message: pictures go to a vision model, code to a coding model, quick chat to a small fast model. <em>team</em> lets two models answer and a third combine the best answer.</li>
+        </ol>
+
+        <h2 id="speed">Measured speed <a class="anchor" href="#speed" aria-label="Link to this section">#</a></h2>
+        <p>Each model was asked for a 400-token answer, after it had loaded (the second of two runs). <em>Answer speed</em> is how fast the model writes once it has started.</p>
+        <div class="table-wrap">
+          <table>
+            <caption>Answer speed in tokens per second, on my setup (Nov 2026)</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Where it runs</th><th scope="col" class="num">Answer speed (tokens/s)</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">qwen3.5-4b</th><td>Server GPU</td><td class="num best">63</td></tr>
+              <tr><th scope="row">gemma-4-12b (vision)</th><td>GPU PC</td><td class="num">42</td></tr>
+              <tr><th scope="row">gpt-oss-20b</th><td>Split over both GPUs</td><td class="num">57–71</td></tr>
+              <tr><th scope="row">auto</th><td>Picks one model per message</td><td class="num">42</td></tr>
+              <tr><th scope="row">team</th><td>Two models answer, a third combines</td><td class="num">about 2.5 min per answer</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The 20B model is the interesting one: it doesn't fit on either graphics card alone, yet split over both it writes faster than anyone can read. <em>team</em> is slow because three models work on every answer, so it is for questions where quality matters more than speed.</p>
+
+        <h2 id="features">What it can do <a class="anchor" href="#features" aria-label="Link to this section">#</a></h2>
+        <ul>
+          <li><strong>Chat for the family:</strong> Open WebUI with a private account for each person. It works on phones and can be added to the home screen.</li>
+          <li><strong>Add a PC in one click:</strong> one file on Windows, one command on Linux.</li>
+          <li><strong>Add models from the web:</strong> search Hugging Face in the control panel, see whether a model fits your GPUs, then click Add. A weekly check suggests newer models that fit.</li>
+          <li><strong>Private web search:</strong> a self-hosted SearXNG lets the AI look things up without accounts or tracking.</li>
+          <li><strong>Live health page:</strong> CPU, RAM, GPU temperatures, network, services and drive SMART data, refreshed every 0.5 seconds.</li>
+          <li><strong>Drives and RAID:</strong> keep models in any folder, on a spare drive, or on several drives as RAID 0, 1, 5 or 10, set up from the control panel.</li>
+          <li><strong>Alerts and backups:</strong> Telegram messages about disk, RAID or service problems, and a nightly backup of chats and settings.</li>
+          <li><strong>Coding assistants:</strong> an OpenAI- and Anthropic-compatible API for VS Code extensions and scripts.</li>
+          <li><strong>Image generation (optional):</strong> ComfyUI with Z-Image Turbo on an NVIDIA PC, used straight from the chat.</li>
+        </ul>
+
+        <h2 id="control-panel">The control panel <a class="anchor" href="#control-panel" aria-label="Link to this section">#</a></h2>
+        <p>Everything is managed from one web page: a single-file Python app that uses only the standard library. It works on any device at home after logging in.</p>
+        <div class="table-wrap">
+          <table>
+            <caption>Tabs of the control panel</caption>
+            <thead>
+              <tr><th scope="col">Tab</th><th scope="col">What it does</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Models</th><td>Search Hugging Face, check the fit, add, rename or remove models, follow downloads</td></tr>
+              <tr><th scope="row">GPUs</th><td>Every GPU in the house with live memory use; set Use / Standby / Off and give each a name</td></tr>
+              <tr><th scope="row">Health</th><td>Live server status, services, drive SMART data with self-tests, RAID state</td></tr>
+              <tr><th scope="row">Storage</th><td>Choose a folder, one drive or a RAID for the models; erasing needs “ERASE” plus the admin password</td></tr>
+              <tr><th scope="row">Add a PC</th><td>The download link and the Linux command for new GPU PCs</td></tr>
+              <tr><th scope="row">Settings</th><td>Telegram alerts, devices allowed to use the API, password, logged-in devices</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="security">Security decisions <a class="anchor" href="#security" aria-label="Link to this section">#</a></h2>
+        <ul>
+          <li><strong>Home network only.</strong> The firewall accepts connections from the home network only. Nothing is opened to the internet.</li>
+          <li><strong>Workers trust one machine.</strong> The GPU PCs only accept model traffic from the AI server.</li>
+          <li><strong>A real login for the admin panel.</strong> Passwords are hashed with PBKDF2, sessions use HttpOnly cookies, and only 5 failed tries are allowed in 10 minutes. The first password needs a one-time setup code.</li>
+          <li><strong>Least privilege.</strong> The panel runs as a normal user and may run only three small root helpers. It can never touch the system disk.</li>
+          <li><strong>No data on the gaming PC.</strong> It only lends its GPU while it is switched on. All models and chats stay on the server.</li>
+        </ul>
+
+        <h2 id="lessons">Problems I ran into <a class="anchor" href="#lessons" aria-label="Link to this section">#</a></h2>
+        <h3 id="search-blocked">Search engines block home servers <a class="anchor" href="#search-blocked" aria-label="Link to this section">#</a></h3>
+        <p>Google refused the server's searches and DuckDuckGo answered with CAPTCHAs. Google's own search API is closed to new users. SearXNG with Brave as the main engine turned out to be the reliable choice.</p>
+        <h3 id="new-drive">A new drive that wouldn't mount <a class="anchor" href="#new-drive" aria-label="Link to this section">#</a></h3>
+        <p>After formatting a new hard drive, the system's cached drive ID was out of date and the mount failed. Reading the ID straight from the disk (<code>blkid -p</code>) and mounting by UUID with <code>nofail</code> fixed it, and the server still starts if the drive is missing.</p>
+        <h3 id="restart-hang">A restart that never finished <a class="anchor" href="#restart-hang" aria-label="Link to this section">#</a></h3>
+        <p>The chat container checked for an update every time it started, and it hung on a large download. Updates are now a separate step that downloads first and swaps afterwards.</p>
+        <h3 id="line-endings">Windows and Linux line endings <a class="anchor" href="#line-endings" aria-label="Link to this section">#</a></h3>
+        <p>One wrong kind of newline breaks a Windows <code>.bat</code> file or a Linux script. A <code>.gitattributes</code> file now gives each file type the right line endings, whichever computer it is edited on.</p>
+        <h3 id="live-refresh">Live dashboards without flicker <a class="anchor" href="#live-refresh" aria-label="Link to this section">#</a></h3>
+        <p>Refreshing every 0.5 seconds kept redrawing the page and swallowed clicks. The panel now only redraws parts that actually changed, never overlaps requests, and pauses while you click.</p>
+
+        <h2 id="try-it">Try it yourself <a class="anchor" href="#try-it" aria-label="Link to this section">#</a></h2>
+        <p>On a machine with Ubuntu Server 24.04 or newer:</p>
+        <pre data-lang="bash"><code>git clone https://github.com/shafakat12/home-ai-cluster.git
+cd home-ai-cluster
+sudo bash install.sh</code></pre>
+        <p>The installer finds the GPU, picks starter models that fit, asks where to store them, and at the end prints the addresses and a one-time setup code for the control panel. To add a Windows PC, open <code>http://SERVER-IP:8090/add-this-pc.bat</code> on it and double-click the file.</p>
+
+        <aside class="callout warning">
+          <p class="callout-title">Beta</p>
+          <p>It runs every day on my own home server. A full install on a fresh machine and creating a RAID on real drives are still being tested.</p>
+        </aside>
+
+        <p>The project is open source under the MIT license. It is built on <a href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noopener">llama.cpp</a>, <a href="https://github.com/mostlygeek/llama-swap" target="_blank" rel="noopener">llama-swap</a>, <a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">Open WebUI</a>, <a href="https://github.com/searxng/searxng" target="_blank" rel="noopener">SearXNG</a> and <a href="https://github.com/comfyanonymous/ComfyUI" target="_blank" rel="noopener">ComfyUI</a>, each under its own license.</p>
+      </div>
+    </article>
+
+    <nav class="post-nav" aria-label="More posts">
+      <a class="post-back" href="../lab.html"><span aria-hidden="true">&larr;</span> Back to Lab</a>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand">Shafakat Sayeedi</span>
+          <p>IT, Systems &amp; Branch Management</p>
+          <div class="footer-actions">
+            <a class="footer-button" href="../contact.html">Get in touch</a>
+            <a class="footer-button" href="../cv/Shafakat-Sayeedi-CV.pdf" download="Shafakat-Sayeedi-CV.pdf" type="application/pdf">Download CV</a>
+          </div>
+        </div>
+        <div>
+          <h2 class="footer-heading">Explore</h2>
+          <nav aria-label="Footer">
+            <ul class="footer-links">
+              <li><a href="../index.html">Home</a></li>
+              <li><a href="../about.html">About</a></li>
+              <li><a href="../experience.html">Experience</a></li>
+              <li><a href="../work.html">Work</a></li>
+              <li><a href="../lab.html" aria-current="page">Lab</a></li>
+              <li><a href="../skills.html">Skills</a></li>
+              <li><a href="../education.html">Education</a></li>
+              <li><a href="../contact.html">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div>
+          <h2 class="footer-heading">Contact</h2>
+          <ul class="footer-contact">
+            <li>Dhaka, Bangladesh</li>
+            <li>Phone: <a href="tel:+8801724814108">+880 1724-814108</a></li>
+            <li>Phone: <a href="tel:+8801996073758">+880 1996-073758</a></li>
+            <li>Email: <a href="mailto:golamshafakat2000@gmail.com">golamshafakat2000@gmail.com</a></li>
+            <li>GitHub: <a href="https://github.com/shafakat12">github.com/shafakat12</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
