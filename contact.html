@@ -13,14 +13,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Swarm rebuild: hide the first screen before it paints, but only when the intro will play. */
+    (function () {
+      try {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!window.Animation || !("finished" in Animation.prototype)) return;
+      } catch (e) {}
+      var root = document.documentElement;
+      root.classList.add("swarm-pending");
+      /* Failsafe in case swarm-rebuild.js never runs. */
+      window.swarmFailsafe = setTimeout(function () { root.classList.remove("swarm-pending"); }, 6000);
+    })();
+  </script>
+  <script src="swarm-rebuild.js" defer></script>
+  <script src="glass-tilt.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="top">
-    <div class="wrap">
-      <span class="brand">Shafakat Sayeedi</span>
-      <nav aria-label="Main">
+    <div class="wrap" data-swarm>
+      <span class="brand" data-swarm>Shafakat Sayeedi</span>
+      <nav aria-label="Main" data-swarm>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
@@ -37,13 +52,13 @@
   <main id="main" class="wrap">
     <div class="head-with-photo">
       <header class="page-head">
-        <h1>Get in touch</h1>
-        <p>You can reach me by email or phone, or send a message using the form below.</p>
+        <h1 data-swarm>Get in touch</h1>
+        <p data-swarm>You can reach me by email or phone, or send a message using the form below.</p>
       </header>
-      <div class="portrait" role="img" aria-label="Photo of Shafakat Sayeedi"><span aria-hidden="true">SS</span></div>
+      <div data-swarm class="portrait" role="img" aria-label="Photo of Shafakat Sayeedi"><span aria-hidden="true">SS</span></div>
     </div>
 
-    <dl class="contact-rows">
+    <dl data-swarm class="contact-rows">
       <div>
         <dt class="label">Email</dt>
         <dd><a href="mailto:golamshafakat2000@gmail.com">golamshafakat2000@gmail.com</a></dd>
@@ -63,9 +78,9 @@
       </div>
     </dl>
 
-    <section class="split message-section" aria-labelledby="message-heading">
-      <h2 id="message-heading">Send a message</h2>
-      <form class="message-form" action="https://api.web3forms.com/submit" method="POST">
+    <section class="split message-section" data-swarm aria-labelledby="message-heading">
+      <h2 data-swarm id="message-heading">Send a message</h2>
+      <form data-swarm class="message-form" action="https://api.web3forms.com/submit" method="POST">
         <!-- Messages are delivered by Web3Forms. See "Contact form" in README.md. -->
         <input type="hidden" name="access_key" value="abdd0da5-fdfe-4f66-9ff8-8923b09d83ac">
         <input type="hidden" name="from_name" value="Portfolio contact form">
@@ -131,7 +146,10 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
-        <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        <div class="footer-bottom-links">
+          <button class="swarm-replay" type="button" hidden>Rebuild <span aria-hidden="true">&#8635;</span></button>
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
       </div>
     </div>
   </footer>

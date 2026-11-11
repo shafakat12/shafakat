@@ -8,6 +8,18 @@
   --biz: #f4b88a;
   --tech: #7fe3bd;
   --veil: rgba(16, 43, 33, 0.75);
+  /* Lighter than --muted, for small text that sits straight on the fog (page intros). */
+  --ink-soft: #d4e3da;
+  /* Frosted glass panels */
+  --glass: rgba(16, 43, 33, 0.42);
+  --glass-border: rgba(233, 243, 237, 0.14);
+  --glass-edge: rgba(233, 243, 237, 0.16);
+  --glass-blur: 18px;
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.18);
+  --radius: 16px;
+  --pad: clamp(1.25rem, 3.2vw, 2.25rem);
+  --gap: clamp(0.875rem, 2vw, 1.25rem);
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
   --serif: "Newsreader", Georgia, "Times New Roman", serif;
   --sans: "Geist", "Segoe UI", system-ui, sans-serif;
   --mono: "Geist Mono", Consolas, "Courier New", monospace;
@@ -20,6 +32,8 @@
 }
 
 html {
+  /* Shows behind the photo layers, and during overscroll/bounce, so it never flashes white. */
+  background: var(--bg);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -47,7 +61,8 @@ body {
   min-height: 100dvh;
   position: relative;
   margin: 0;
-  background: var(--bg);
+  /* No body background: the colour is on <html>, so the photo and fog layers below stay visible. */
+  background: transparent;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 1rem;
@@ -55,17 +70,70 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Site-wide background photo. It covers the whole page and scrolls with it.
-   --veil keeps text readable: lower its last number to show more of the photo. */
+/* Background, in three layers from the back:
+   1. body::before: the photo. It covers the whole page and scrolls with it.
+      Instead of stretching one photo to the full page height (which phones can't
+      draw well), the photo is drawn at screen width and repeated down the page.
+      Each tile is the photo followed by an upside-down copy, so the joins blend.
+      --veil is a tint over the photo: lower its last number (0.75) to show more
+      of the photo, raise it to show less.
+   2. body::after: drifting fog, which stays in place on screen.
+   3. The frosted glass panels, which blur what is behind them.
+   Not background-attachment: fixed, which doesn't work on iPhones. */
 body::before {
   content: "";
   position: absolute;
-  z-index: -1;
+  z-index: -2;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(var(--veil), var(--veil)), url("images/background.jpg") center top / cover no-repeat;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--veil), var(--veil)), url("images/background-tile.jpg");
+  background-image: linear-gradient(var(--veil), var(--veil)), image-set(url("images/background-tile.webp") type("image/webp"), url("images/background-tile.jpg") type("image/jpeg"));
+  background-position: top center;
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
+}
+
+/* Phones and small tablets get a 1080px-wide tile instead of the 1920px one. */
+@media (max-width: 50rem) {
+  body::before {
+    background-image: linear-gradient(var(--veil), var(--veil)), url("images/background-tile-mobile.jpg");
+    background-image: linear-gradient(var(--veil), var(--veil)), image-set(url("images/background-tile-mobile.webp") type("image/webp"), url("images/background-tile-mobile.jpg") type("image/jpeg"));
+  }
+}
+
+/* Fog: soft pale mist patches and a light overall haze, drifting slowly.
+   It is larger than the screen so its edges never show while it moves. */
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  top: -10vh;
+  left: -10vw;
+  width: 120vw;
+  height: 120vh;
+  height: 120lvh;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 22% 24%, rgba(223, 243, 230, 0.045), transparent 70%),
+    radial-gradient(42% 36% at 78% 62%, rgba(223, 243, 230, 0.045), transparent 70%),
+    radial-gradient(34% 28% at 42% 92%, rgba(233, 243, 237, 0.04), transparent 70%),
+    linear-gradient(rgba(223, 243, 230, 0.025), rgba(223, 243, 230, 0.025));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::after {
+    animation: fog-drift 52s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes fog-drift {
+  0% { transform: translate3d(-3vw, -2vh, 0) scale(1); }
+  50% { transform: translate3d(2vw, 1.5vh, 0) scale(1.05); }
+  100% { transform: translate3d(4vw, -1vh, 0) scale(1.02); }
 }
 
 h1, h2, h3, p, ul, ol, dl, dd {
@@ -344,7 +412,7 @@ main {
 
 .hero-name {
   margin-top: 1rem;
-  font-size: clamp(1.5rem, 9.8vw, 5.75rem);
+  font-size: clamp(1.5rem, 8.8vw, 5rem);
   line-height: 1.02;
   letter-spacing: -0.025em;
 }
@@ -835,7 +903,166 @@ a:hover .arrow-out {
   cursor: pointer;
 }
 
+/* Frosted glass panels
+   Each section floats above the fog as a frosted card: a translucent tint, a blur
+   of what is behind it, a thin border with a brighter top edge, and a deep soft shadow.
+   The panel edges replace the old divider lines between sections. */
+
+.site-header {
+  padding: var(--gap) var(--gutter) 0;
+}
+
+/* The header and footer bars line up with the panels in the main column. */
+.site-header > .wrap,
+.site-footer > .wrap {
+  max-width: calc(68rem - 2 * var(--gutter));
+}
+
+.site-header > .wrap {
+  padding: 0.625rem clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.site-footer {
+  padding: 0 var(--gutter) var(--gap);
+}
+
+.site-footer > .wrap {
+  padding: var(--pad) var(--pad) 1.25rem;
+}
+
+.site-header > .wrap,
+.site-footer > .wrap,
+.hero,
+.index-list,
+.split,
+.role-head,
+.about-row,
+.edu-list > li,
+.contact-rows,
+.next-link {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(233, 243, 237, 0.04), rgba(233, 243, 237, 0) 45%), var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--glass-edge), var(--glass-shadow);
+}
+
+/* Space between panels, so the fog shows through. */
+.hero,
+.index-list,
+.split,
+.role-head,
+.about-row,
+.edu-list > li,
+.contact-rows,
+.next-link {
+  margin-top: var(--gap);
+}
+
+.hero {
+  padding: clamp(1.75rem, 5vw, 3.5rem) var(--pad);
+}
+
+.split,
+.role-head,
+.about-row,
+.edu-list > li {
+  padding: var(--pad);
+}
+
+.index-list,
+.contact-rows {
+  padding: 0.25rem var(--pad);
+}
+
+.next-link {
+  padding: 1.25rem var(--pad);
+}
+
+.lead {
+  padding-bottom: 0.5rem;
+}
+
+/* Small text on the open fog uses the lighter colour so it stays readable. */
+.page-head p {
+  color: var(--ink-soft);
+}
+
+/* Rows inside one panel keep a thin divider between them, but not above the first. */
+.index-row {
+  position: relative;
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  border-top: 0;
+  border-radius: 10px;
+}
+
+.index-row + .index-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0.75rem;
+  left: 0.75rem;
+  height: 1px;
+  background: var(--rule);
+}
+
+.contact-rows > div:first-child {
+  border-top: 0;
+}
+
+/* Browsers without backdrop blur get a more solid panel so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass: rgba(16, 43, 33, 0.8);
+  }
+}
+
+/* Phones: lighter blur and shadows keep scrolling smooth. */
+@media (max-width: 40rem) {
+  :root {
+    --glass-blur: 10px;
+    --glass-shadow: 0 10px 28px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.16);
+    --radius: 12px;
+    --pad: clamp(1rem, 4.5vw, 1.25rem);
+    --gap: 0.75rem;
+  }
+}
+
 /* Motion */
+
+/* 3D tilt on desktop: glass-tilt.js adds .tilt and sets the angle and light position. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tilt {
+    position: relative;
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  .tilt.is-tilting {
+    transition-duration: 0.15s;
+  }
+
+  /* A soft light sheen that follows the mouse. */
+  .tilt::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(233, 243, 237, 0.07), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .tilt.is-tilting::after {
+    opacity: 1;
+  }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
@@ -1005,5 +1232,178 @@ a:hover .arrow-out {
 
   .footer-contact li + li {
     margin-top: 0.5rem;
+  }
+}
+
+/* Swarm rebuild
+   Page intro: coloured multiplayer cursors select each block on the first screen
+   and drop it in. swarm-rebuild.js drives it; html.swarm-pending is only set when
+   it will play. */
+
+.swarm-pending [data-swarm]:not(.swarm-built) {
+  opacity: 0;
+}
+
+/* Covers the whole page (not just the screen), so the build scrolls with the content. */
+.swarm-overlay {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.swarm-overlay > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* A faint dotted design canvas behind the build, fading out toward the edges. */
+.swarm-overlay > .swarm-grid {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(233, 243, 237, 0.2) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 85%);
+  will-change: opacity;
+}
+
+.swarm-cursor {
+  z-index: 3;
+}
+
+.swarm-cursor svg {
+  display: block;
+  width: 20px;
+  height: 22px;
+  margin: -2px 0 0 -2px;
+  overflow: visible;
+  transform-origin: 2px 2px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.swarm-cursor svg path {
+  stroke: #fff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.swarm-tag {
+  position: absolute;
+  top: 19px;
+  left: 14px;
+  padding: 0.1875rem 0.5625rem 0.1875rem 0.5rem;
+  border-radius: 3px 999px 999px 999px;
+  color: #102b21;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.swarm-cursor-flip .swarm-tag {
+  right: 6px;
+  left: auto;
+  border-radius: 999px 3px 999px 999px;
+}
+
+.swarm-ripple {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1.5px solid;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.swarm-box {
+  z-index: 1;
+}
+
+.swarm-box > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.swarm-fill,
+.swarm-edge {
+  transform-origin: 0 0;
+}
+
+.swarm-handle {
+  width: 7px;
+  height: 7px;
+  margin: -3px 0 0 -3px;
+  border: 1.5px solid;
+  border-radius: 1.5px;
+  background: #fff;
+}
+
+.swarm-pill {
+  z-index: 2;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.footer-bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.swarm-replay {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+
+.swarm-replay:hover {
+  color: var(--tech);
+  text-decoration-color: currentColor;
+}
+
+.swarm-replay[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swarm-replay {
+    display: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .swarm-tag {
+    top: 17px;
+    left: 12px;
+    padding: 0.125rem 0.4375rem 0.125rem 0.375rem;
+    font-size: 10.5px;
+  }
+
+  .swarm-overlay > .swarm-grid {
+    background-size: 18px 18px;
   }
 }

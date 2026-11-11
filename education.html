@@ -13,14 +13,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Swarm rebuild: hide the first screen before it paints, but only when the intro will play. */
+    (function () {
+      try {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!window.Animation || !("finished" in Animation.prototype)) return;
+      } catch (e) {}
+      var root = document.documentElement;
+      root.classList.add("swarm-pending");
+      /* Failsafe in case swarm-rebuild.js never runs. */
+      window.swarmFailsafe = setTimeout(function () { root.classList.remove("swarm-pending"); }, 6000);
+    })();
+  </script>
+  <script src="swarm-rebuild.js" defer></script>
+  <script src="glass-tilt.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="top">
-    <div class="wrap">
-      <span class="brand">Shafakat Sayeedi</span>
-      <nav aria-label="Main">
+    <div class="wrap" data-swarm>
+      <span class="brand" data-swarm>Shafakat Sayeedi</span>
+      <nav aria-label="Main" data-swarm>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
@@ -36,12 +51,12 @@
 
   <main id="main" class="wrap">
     <header class="page-head">
-      <h1>Education</h1>
-      <p>My studies at Bangladesh Islamic University (BIU) and at Araibari Islamia Sayeedia Kamil Madrasah, Araibari, Kasba Sadar, Kasba, Brahmanbaria, 3460.</p>
+      <h1 data-swarm>Education</h1>
+      <p data-swarm>My studies at Bangladesh Islamic University (BIU) and at Araibari Islamia Sayeedia Kamil Madrasah, Araibari, Kasba Sadar, Kasba, Brahmanbaria, 3460.</p>
     </header>
 
     <ol class="edu-list">
-      <li>
+      <li data-swarm>
         <p class="label"><time>2023</time> &ndash; Present</p>
         <div class="edu-name">
           <h2>Honours</h2>
@@ -49,7 +64,7 @@
           <p class="edu-school">Bangladesh Islamic University (BIU)</p>
         </div>
       </li>
-      <li>
+      <li data-swarm>
         <p class="label"><time>2024</time> &ndash; Present</p>
         <div class="edu-name">
           <h2>Kamil</h2>
@@ -58,7 +73,7 @@
         </div>
         <p class="edu-result">CGPA 3.56 (1st Year)</p>
       </li>
-      <li>
+      <li data-swarm>
         <p class="label"><time>2023</time></p>
         <div class="edu-name">
           <h2>Fazil</h2>
@@ -67,7 +82,7 @@
         </div>
         <p class="edu-result">CGPA 4.08</p>
       </li>
-      <li>
+      <li data-swarm>
         <p class="label"><time>2020</time></p>
         <div class="edu-name">
           <h2>Alim</h2>
@@ -76,7 +91,7 @@
         </div>
         <p class="edu-result">GPA 5.00</p>
       </li>
-      <li>
+      <li data-swarm>
         <p class="label"><time>2018</time></p>
         <div class="edu-name">
           <h2>Dakhil</h2>
@@ -85,7 +100,7 @@
         </div>
         <p class="edu-result">GPA 5.00</p>
       </li>
-      <li>
+      <li data-swarm>
         <p class="label">Completed</p>
         <div class="edu-name">
           <h2>Hifz</h2>
@@ -94,7 +109,7 @@
       </li>
     </ol>
 
-    <a class="next-link" href="contact.html"><span class="label">Next</span> <strong>Contact</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    <a data-swarm class="next-link" href="contact.html"><span class="label">Next</span> <strong>Contact</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
   </main>
 
   <footer class="site-footer">
@@ -135,7 +150,10 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
-        <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        <div class="footer-bottom-links">
+          <button class="swarm-replay" type="button" hidden>Rebuild <span aria-hidden="true">&#8635;</span></button>
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
       </div>
     </div>
   </footer>

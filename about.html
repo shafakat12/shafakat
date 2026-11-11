@@ -13,14 +13,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    /* Swarm rebuild: hide the first screen before it paints, but only when the intro will play. */
+    (function () {
+      try {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!window.Animation || !("finished" in Animation.prototype)) return;
+      } catch (e) {}
+      var root = document.documentElement;
+      root.classList.add("swarm-pending");
+      /* Failsafe in case swarm-rebuild.js never runs. */
+      window.swarmFailsafe = setTimeout(function () { root.classList.remove("swarm-pending"); }, 6000);
+    })();
+  </script>
+  <script src="swarm-rebuild.js" defer></script>
+  <script src="glass-tilt.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="top">
-    <div class="wrap">
-      <span class="brand">Shafakat Sayeedi</span>
-      <nav aria-label="Main">
+    <div class="wrap" data-swarm>
+      <span class="brand" data-swarm>Shafakat Sayeedi</span>
+      <nav aria-label="Main" data-swarm>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html" aria-current="page">About</a></li>
@@ -37,16 +52,16 @@
   <main id="main" class="wrap">
     <div class="head-with-photo">
       <header class="page-head">
-        <h1>About me</h1>
+        <h1 data-swarm>About me</h1>
       </header>
-      <div class="portrait" role="img" aria-label="Photo of Shafakat Sayeedi"><span aria-hidden="true">SS</span></div>
+      <div data-swarm class="portrait" role="img" aria-label="Photo of Shafakat Sayeedi"><span aria-hidden="true">SS</span></div>
     </div>
 
-    <p class="lead">Self-taught IT practitioner and former branch manager with three years running a travel agency branch and its technology.</p>
+    <p data-swarm class="lead">Self-taught IT practitioner and former branch manager with three years running a travel agency branch and its technology.</p>
 
-    <div class="about-row">
-      <p class="prose">Combines client service, ticketing, sales and marketing experience with hands-on server, networking and Linux skills. Currently studying Honours in Islamic Studies (BIU) and a Kamil (Master's) in Hadith.</p>
-      <dl class="facts">
+    <div class="about-row" data-swarm>
+      <p data-swarm class="prose">Combines client service, ticketing, sales and marketing experience with hands-on server, networking and Linux skills. Currently studying Honours in Islamic Studies (BIU) and a Kamil (Master's) in Hadith.</p>
+      <dl data-swarm class="facts">
         <div><dt class="label">Full name</dt><dd>Shafakat Md Golam Shobhani Sayeedi</dd></div>
         <div><dt class="label">Previously</dt><dd>Branch Manager, Global Trade Link</dd></div>
         <div><dt class="label">Focus</dt><dd>Servers, networks, Linux and data</dd></div>
@@ -56,7 +71,7 @@
       </dl>
     </div>
 
-    <a class="next-link" href="experience.html"><span class="label">Next</span> <strong>Experience</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    <a data-swarm class="next-link" href="experience.html"><span class="label">Next</span> <strong>Experience</strong> <span class="arrow" aria-hidden="true">&rarr;</span></a>
   </main>
 
   <footer class="site-footer">
@@ -97,7 +112,10 @@
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
-        <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        <div class="footer-bottom-links">
+          <button class="swarm-replay" type="button" hidden>Rebuild <span aria-hidden="true">&#8635;</span></button>
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
       </div>
     </div>
   </footer>
