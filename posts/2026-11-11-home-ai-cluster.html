@@ -57,7 +57,7 @@
           <span class="label">8 min read</span>
         </p>
         <h1>Home AI Cluster: a private AI server built from spare PCs</h1>
-        <p class="post-summary">A self-hosted AI system for my family. My small Ubuntu server and my gaming PC share their graphics cards over the home network, so together they run AI models that neither could run alone.</p>
+        <p class="post-summary">I wanted my family to have an AI we run ourselves. Now my small Ubuntu server and my gaming PC share their graphics cards over the home network, so together they run models that neither could run alone.</p>
         <ul class="tags">
           <li>Self-hosting</li>
           <li>AI</li>
@@ -104,12 +104,12 @@
         <p>Every button and status is explained in <a href="https://github.com/shafakat12/home-ai-cluster/blob/main/docs/control-panel.md" target="_blank" rel="noopener">the control panel guide on GitHub</a>.</p>
 
         <h2 id="why">Why I built it <a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
-        <p>I wanted one AI that everyone in my family could use for chat, coding help and pictures, running on my own hardware, so the models and the chats stay at home and nobody needs an account somewhere else.</p>
-        <p>The problem: good models need a lot of GPU memory. My server has a 6 GB graphics card and my gaming PC has an 11 GB one. A 20-billion-parameter model doesn't fit on either card. It does fit on both together. So the core idea of this project is <strong>GPU pooling</strong>: split one model across the GPUs of several PCs over the home network, and make the whole thing simple enough that the rest of the family never has to think about it.</p>
+        <p>I wanted one AI that the whole family could use for chatting, coding help and making pictures. And I wanted it on my own hardware, so the models and the conversations stay at home and nobody has to sign up for anything.</p>
+        <p>The catch is that good models need a lot of GPU memory. My server's graphics card has 6 GB and my gaming PC's has 11 GB. A 20-billion-parameter model won't fit on either one, but it does fit on both together. That became the core idea: <strong>GPU pooling</strong>, splitting one model across the graphics cards of several PCs over the home network. The other half of the job was making it simple enough that nobody else in the family ever has to think about how it works.</p>
 
         <aside class="callout result">
           <p class="callout-title">Result</p>
-          <p>The 6 GB and 11 GB cards in two different PCs work as one. Together they run gpt-oss 20B at home at about 57–71 tokens per second (measured on my setup), and everyone in the house can use it from a phone or laptop.</p>
+          <p>It works. The two cards, sitting in two different PCs, act as one. They run gpt-oss 20B at about 57–71 tokens per second on my setup, and anyone in the house can use it from a phone or laptop.</p>
         </aside>
 
         <h2 id="how-it-works">How it works <a class="anchor" href="#how-it-works" aria-label="Link to this section">#</a></h2>
@@ -142,7 +142,7 @@
             </tbody>
           </table>
         </div>
-        <p>The 20B model is the interesting one: it doesn't fit on either graphics card alone, yet split over both it writes faster than anyone can read. <em>team</em> is slow because three models work on every answer, so it is for questions where quality matters more than speed.</p>
+        <p>The 20B model is the one I'm proudest of. It doesn't fit on either card alone, yet split over both it writes faster than you can read. <em>team</em> is slow because three models work on every answer, so I only use it when quality matters more than speed.</p>
 
         <h2 id="features">What it can do <a class="anchor" href="#features" aria-label="Link to this section">#</a></h2>
         <ul>
@@ -176,15 +176,15 @@
 
         <h2 id="lessons">Problems I ran into <a class="anchor" href="#lessons" aria-label="Link to this section">#</a></h2>
         <h3 id="search-blocked">Search engines block home servers <a class="anchor" href="#search-blocked" aria-label="Link to this section">#</a></h3>
-        <p>Google refused the server's searches and DuckDuckGo answered with CAPTCHAs. Google's own search API is closed to new users. SearXNG with Brave as the main engine turned out to be the reliable choice.</p>
+        <p>Google refused the server's searches, and DuckDuckGo kept answering with CAPTCHAs. Google's own search API doesn't accept new users anymore either. In the end, SearXNG with Brave as the main engine was the setup that kept working.</p>
         <h3 id="new-drive">A new drive that wouldn't mount <a class="anchor" href="#new-drive" aria-label="Link to this section">#</a></h3>
-        <p>After formatting a new hard drive, the system's cached drive ID was out of date and the mount failed. Reading the ID straight from the disk (<code>blkid -p</code>) and mounting by UUID with <code>nofail</code> fixed it, and the server still starts if the drive is missing.</p>
+        <p>After I formatted a new hard drive, it refused to mount, because the system was still holding an old copy of the drive's ID. Reading the ID straight from the disk (<code>blkid -p</code>) and mounting by UUID with <code>nofail</code> fixed it. Now the server still starts even if that drive is missing.</p>
         <h3 id="restart-hang">A restart that never finished <a class="anchor" href="#restart-hang" aria-label="Link to this section">#</a></h3>
-        <p>The chat container checked for an update every time it started, and it hung on a large download. Updates are now a separate step that downloads first and swaps afterwards.</p>
+        <p>The chat container checked for updates every time it started, and once it got stuck on a big download, so the restart never finished. Now updating is its own step: it downloads everything first and only then swaps the new version in.</p>
         <h3 id="line-endings">Windows and Linux line endings <a class="anchor" href="#line-endings" aria-label="Link to this section">#</a></h3>
-        <p>The wrong kind of line ending can break a Windows <code>.bat</code> file or a Linux script. A <code>.gitattributes</code> file now gives each file type the right line endings, whichever computer it is edited on.</p>
+        <p>Windows and Linux end their lines differently, and the wrong kind breaks a Windows <code>.bat</code> file or a Linux script. A <code>.gitattributes</code> file now gives each file type the right line endings, whichever computer I edit it on.</p>
         <h3 id="live-refresh">Live dashboards without flicker <a class="anchor" href="#live-refresh" aria-label="Link to this section">#</a></h3>
-        <p>Refreshing every 0.5 seconds kept redrawing the page and swallowed clicks. The panel now redraws only the parts that have changed, never overlaps requests, and pauses while you click.</p>
+        <p>Refreshing twice a second meant the page was constantly redrawing itself, and clicks got lost. Now the panel redraws only the parts that have changed, never sends a new request before the last one is back, and pauses while you click.</p>
 
         <h2 id="try-it">Try it yourself <a class="anchor" href="#try-it" aria-label="Link to this section">#</a></h2>
         <p>On a machine with Ubuntu Server 24.04 or newer:</p>
@@ -195,7 +195,7 @@ sudo bash install.sh</code></pre>
 
         <aside class="callout warning">
           <p class="callout-title">Beta</p>
-          <p>It runs on my own home server. A full install on a fresh machine and creating a RAID on real drives are still being tested.</p>
+          <p>It runs every day on my own home server, but I'm still testing a full install on a fresh machine and creating a RAID on real drives.</p>
         </aside>
 
         <p>I built it step by step on my own home server with help from an AI coding assistant (Claude). I decided what it should do, ran and tested it on my hardware and measured the speeds; the AI helped write much of the code and the documentation.</p>
