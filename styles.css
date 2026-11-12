@@ -787,6 +787,24 @@ a:hover .arrow-out {
   font-size: 0.75rem;
 }
 
+/* Extra links under a project, e.g. its code and write-up. */
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.project-links a {
+  text-decoration-color: var(--line);
+}
+
+.project-links a:hover .arrow {
+  color: var(--tech);
+}
+
 /* Skills */
 
 .skill-rows > div {
