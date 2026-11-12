@@ -14,7 +14,7 @@ Personal portfolio of Shafakat Md Golam Shobhani Sayeedi, a self-taught IT pract
 | [Work](https://shafakat12.github.io/shafakat/work.html) | `work.html` | Websites and home-lab projects |
 | [Lab](https://shafakat12.github.io/shafakat/lab.html) | `lab.html` and `posts/` | Write-ups of projects, papers, benchmarks and experiments |
 | [Skills](https://shafakat12.github.io/shafakat/skills.html) | `skills.html` | IT infrastructure and systems, web design, creative work and business |
-| [Education](https://shafakat12.github.io/shafakat/education.html) | `education.html` | Honours, Kamil, Fazil, Alim and Dakhil |
+| [Education](https://shafakat12.github.io/shafakat/education.html) | `education.html` | Honours, Kamil, Fazil, Alim, Dakhil and Hifz |
 | [Contact](https://shafakat12.github.io/shafakat/contact.html) | `contact.html` | Email, phone, GitHub and a message form |
 
 ## Publishing a post
