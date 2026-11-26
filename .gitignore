@@ -1,0 +1,4 @@
+# Local-only notes (per-machine), e.g. CLAUDE.local.md
+*.local.md
+# graphify indexes in the cloud; never commit a local index if one appears
+.graphify/
