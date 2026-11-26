@@ -16,6 +16,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="article:published_time" content="2026-11-11">
+  <meta property="article:modified_time" content="2026-11-26">
   <meta property="article:author" content="Shafakat Md Golam Shobhani Sayeedi">
 
   <meta name="theme-color" content="#102b21">
@@ -55,7 +56,7 @@
         <p class="post-meta">
           <span class="badge type-project">Project</span>
           <time class="label" datetime="2026-11-11">11 Nov 2026</time>
-          <span class="label">8 min read</span>
+          <span class="label">13 min read</span>
         </p>
         <h1>Home AI Cluster: a private AI server built from spare PCs</h1>
         <p class="post-summary">A self-hosted AI system for my family. My small Ubuntu server and my gaming PC share their graphics cards over the home network, so together they run AI models that neither could run alone.</p>
@@ -78,7 +79,7 @@
           <div><dt>Hardware</dt><dd>Ubuntu server with a GTX 1660 Super (6 GB), Windows gaming PC with an RTX 2080 Ti (11 GB), SSD plus a 1 TB HDD, wired home network</dd></div>
           <div><dt>Software</dt><dd>llama.cpp (RPC), llama-swap, Open WebUI, SearXNG, Docker, ComfyUI; my own scripts in Bash, Python and PowerShell</dd></div>
           <div><dt>Status</dt><dd>Beta (v0.2.0-beta): runs on my home server; open source under the MIT license</dd></div>
-          <div><dt>Published</dt><dd><time datetime="2026-11-11">11 Nov 2026</time></dd></div>
+          <div><dt>Published</dt><dd><time datetime="2026-11-11">11 Nov 2026</time>, updated <time datetime="2026-11-26">26 Nov 2026</time></dd></div>
         </dl>
 
         <aside class="callout result">
@@ -88,7 +89,8 @@
             <li>Restart or shut down the server from the panel, with a 10-second countdown you can cancel.</li>
             <li><strong>Add a PC:</strong> give one PC direct access to the AI API or the image share, and reserve its address in the router.</li>
             <li>An optional network watch: a device list, alerts, and changes that only run after you approve them, with router support for several brands (tested on iStoreOS).</li>
-            <li>Optional HTTPS for the panel, an optional (experimental) ComfyUI on the server, and a size limit on what the AI agent may download on its own.</li>
+            <li>Optional HTTPS for the panel and an optional (experimental) ComfyUI on the server.</li>
+            <li>A <a href="#try-it">step-by-step setup guide</a>: the server, GPU PCs, image generation on a Windows or Linux PC or on the server, and Telegram alerts.</li>
             <li>A security review with Claude Code and the open-source <a href="https://github.com/SnailSploit/claude-red" target="_blank" rel="noopener">claude-red</a> skills, and the fixes that came out of it.</li>
           </ul>
           <p><a class="download" href="https://github.com/shafakat12/home-ai-cluster/releases/tag/v0.2.0-beta" target="_blank" rel="noopener" aria-label="Read the v0.2.0-beta release notes on GitHub (opens in a new tab)">Full release notes <span class="arrow-out" aria-hidden="true">&nearr;</span></a></p>
@@ -109,7 +111,7 @@
           <li><strong>Storage:</strong> what uses space where, the backups, and moving models to a folder, another drive or a RAID. Erasing a drive needs &ldquo;ERASE&rdquo; plus the admin password.</li>
           <li><strong>Logs:</strong> the latest lines from each part of the server.</li>
           <li><strong>Add a PC:</strong> the download link for a Windows PC, the command for a Linux PC, and the GPU PCs the server can see. Here you can also give one PC direct access to the AI API or the image share, reserve its address in the router, and see whether its image generation is running.</li>
-          <li><strong>Settings:</strong> Telegram alerts, which devices may use the API, the size limit for what the AI agent may download, the admin password and the logged-in devices, the router, and <em>Power</em>: restart or shut down the server with a 10-second delay you can cancel (also from the power button at the top).</li>
+          <li><strong>Settings:</strong> Telegram alerts, which devices may use the API, the admin password and the logged-in devices, the router, and <em>Power</em>: restart or shut down the server with a 10-second delay you can cancel (also from the power button at the top).</li>
         </ul>
         <p>On the GPUs tab, each graphics card shows a status:</p>
         <ul>
@@ -179,17 +181,18 @@
         <h2 id="control-panel">The control panel <a class="anchor" href="#control-panel" aria-label="Link to this section">#</a></h2>
         <p>Everything is managed from one web page: a single-file Python app that uses only the standard library. It works on any device at home once you log in. What each tab does is in <a href="#start-here">Start here</a> at the top.</p>
         <figure>
-          <a href="files/home-ai-cluster-control-panel.png"><img src="files/home-ai-cluster-control-panel.png" alt="The Health tab of the control panel: live CPU, memory, GPU, temperature, network and storage cards, and a list of services that are all active." loading="lazy" width="1600" height="1447"></a>
-          <figcaption>Figure 2. The Health tab, with real values from my server. It refreshes every half second.</figcaption>
+          <a href="files/home-ai-cluster-control-panel.png"><img src="files/home-ai-cluster-control-panel.png" alt="The Overview tab of the redesigned control panel: a list of what needs attention, and live cards for CPU, memory, the server GPU, network, storage, GPU PCs, loaded models and up time." loading="lazy" width="1400" height="1000"></a>
+          <figcaption>Figure 2. The Overview tab of the v0.2 control panel (demo data). More screenshots are in the <a href="https://github.com/shafakat12/home-ai-cluster#screenshots" target="_blank" rel="noopener">README on GitHub</a>.</figcaption>
         </figure>
 
         <h2 id="security">Security decisions <a class="anchor" href="#security" aria-label="Link to this section">#</a></h2>
         <ul>
           <li><strong>Home network only.</strong> The firewall accepts connections from the home network only. Nothing is opened to the internet.</li>
+          <li><strong>The AI API is not public.</strong> Port 8080 is closed to everyone except the PCs you allow in the panel. &ldquo;Anthropic-compatible&rdquo; only means tools like Claude Code can be pointed at <em>your</em> server instead of the cloud; nothing is sent anywhere else.</li>
           <li><strong>Workers trust one machine.</strong> The GPU PCs only accept model traffic from the AI server.</li>
           <li><strong>A real login for the admin panel.</strong> Passwords are hashed with PBKDF2, sessions use HttpOnly cookies, and only 5 failed attempts are allowed in 10 minutes. The first password needs a one-time setup code.</li>
           <li><strong>Least privilege.</strong> The panel runs as a normal user and may run only a few named root helpers, each an exact command. Those helpers live outside any folder the panel user can write to, and the panel can never touch the system disk.</li>
-          <li><strong>Changes need your approval.</strong> When the optional network watch (or the AI agent) wants to block a device or a website, it only <em>asks</em>; the change runs only after you approve it in the panel or by tapping Approve in Telegram. The AI agent can add models on its own but only up to a size limit, so it can't fill the disk.</li>
+          <li><strong>Changes need your approval.</strong> When the optional network watch (or the AI agent) wants to block a device or a website, it only <em>asks</em>; the change runs only after you approve it in the panel or by tapping Approve in Telegram. On my own server, the AI agent can also add models, but only up to a size limit, so it can't fill the disk.</li>
           <li><strong>Optional HTTPS.</strong> The panel can serve HTTPS, with a self-signed certificate or behind a reverse proxy.</li>
           <li><strong>No data on the gaming PC.</strong> It only lends its GPU while it is switched on. All models and chats stay on the server.</li>
         </ul>
@@ -207,16 +210,51 @@
         <h3 id="live-refresh">Live dashboards without flicker <a class="anchor" href="#live-refresh" aria-label="Link to this section">#</a></h3>
         <p>Refreshing every 0.5 seconds kept redrawing the page and swallowed clicks. The panel now redraws only the parts that have changed, never overlaps requests, and pauses while you click.</p>
 
-        <h2 id="try-it">Try it yourself <a class="anchor" href="#try-it" aria-label="Link to this section">#</a></h2>
-        <p>On a machine with Ubuntu Server 24.04 or newer:</p>
-        <pre data-lang="bash"><code>git clone https://github.com/shafakat12/home-ai-cluster.git
+        <h2 id="try-it">Set it up yourself, step by step <a class="anchor" href="#try-it" aria-label="Link to this section">#</a></h2>
+        <p>The setup has four parts. Only the first is required. The <a href="https://github.com/shafakat12/home-ai-cluster#step-by-step-setup" target="_blank" rel="noopener">README on GitHub</a> has every command in full.</p>
+
+        <h3 id="part-1">1. Install the AI server <a class="anchor" href="#part-1" aria-label="Link to this section">#</a></h3>
+        <ol>
+          <li>Install Ubuntu Server 24.04 or newer with the OpenSSH server option, and connect it to the router with a cable.</li>
+          <li>Reserve the server's address in your router (<em>DHCP reservation</em> or <em>static lease</em>), so it never changes.</li>
+          <li>Log in over SSH and run the installer:</li>
+        </ol>
+        <pre data-lang="bash"><code>sudo apt update &amp;&amp; sudo apt -y install git
+git clone https://github.com/shafakat12/home-ai-cluster.git
 cd home-ai-cluster
 sudo bash install.sh</code></pre>
-        <p>The installer finds the GPU, picks starter models that fit, asks where to store them, and at the end prints the addresses and a one-time setup code for the control panel. Reserve the IP addresses of the server and the GPU PCs in your router: the setup finds and trusts devices by their address. To add a Windows PC, open <code>http://SERVER-IP:8090/add-this-pc.bat</code> on it and double-click the file.</p>
+        <ol start="4">
+          <li>If it installs an NVIDIA driver, reboot and run <code>sudo bash install.sh</code> again; it continues where it stopped. It also asks where to store the models.</li>
+          <li>Open <code>http://SERVER-IP:3000</code> and create the first chat account, then open <code>http://SERVER-IP:8091</code> and create the control-panel password with the setup code the installer printed.</li>
+          <li>Pick a model in the chat and say hello. Add family members in Open WebUI when you're ready.</li>
+        </ol>
+
+        <h3 id="part-2">2. Add GPU PCs (optional) <a class="anchor" href="#part-2" aria-label="Link to this section">#</a></h3>
+        <ul>
+          <li><strong>Windows:</strong> on the PC, open <code>http://SERVER-IP:8090/add-this-pc.bat</code>, save it, double-click it and click Yes. Wait for <em>WORKER-OK</em>.</li>
+          <li><strong>Linux:</strong> run <code>curl -fsSL http://SERVER-IP:8090/add-worker-linux.sh | bash</code>.</li>
+        </ul>
+        <p>The PC shows up in the GPUs tab within a minute. Give it a name, choose Use, Standby or Off, and reserve its address too (the <em>Reserve IP</em> button does it for supported routers).</p>
+
+        <h3 id="part-3">3. Image generation with ComfyUI (optional) <a class="anchor" href="#part-3" aria-label="Link to this section">#</a></h3>
+        <ul>
+          <li><strong>On a Windows PC (tested):</strong> run the <code>install-comfyui.ps1</code> script as Administrator. It installs ComfyUI, downloads the Z-Image Turbo model and lets only the AI server reach it.</li>
+          <li><strong>On a Linux PC:</strong> a few manual steps: ComfyUI in a Python environment, PyTorch for your GPU, the model, a service that starts with the PC, and a firewall rule for the server only.</li>
+          <li><strong>On the server (experimental):</strong> set <code>INSTALL_COMFYUI=yes</code> and run <code>sudo bash install.sh 85-comfyui</code>. It shares the GPU with the chat models and is reachable only from the server itself.</li>
+        </ul>
+        <p>Then connect it in Open WebUI under <em>Admin Panel &rarr; Settings &rarr; Images</em>, and everyone can make pictures straight from the chat.</p>
+
+        <h3 id="part-4">4. Telegram alerts (optional) <a class="anchor" href="#part-4" aria-label="Link to this section">#</a></h3>
+        <ol>
+          <li>In Telegram, create a bot with <strong>@BotFather</strong> and copy its token.</li>
+          <li>Get your user ID from <strong>@userinfobot</strong>, then open your new bot and press Start.</li>
+          <li>Paste both into the control panel under <em>Settings &rarr; Alerts and Telegram</em> and send a test.</li>
+        </ol>
+        <p>From then on you get a message when a disk shows problems, a service stops or a GPU is switched off automatically, and approval requests come with Approve and Reject buttons. Only taps from your own account count.</p>
 
         <aside class="callout warning">
           <p class="callout-title">Beta</p>
-          <p>It runs on my own home server. A full install on a fresh machine and creating a RAID on real drives are still being tested.</p>
+          <p>It runs on my own home server. A full install on a fresh machine, creating a RAID on real drives, ComfyUI on a Linux PC and ComfyUI on the server are still being tested.</p>
         </aside>
 
         <p>I built it step by step on my own home server with help from an AI coding assistant (Claude). I decided what it should do, ran and tested it on my hardware and measured the speeds; the AI helped write much of the code and the documentation.</p>
