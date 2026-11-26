@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self' https://api.web3forms.com; base-uri 'none'; object-src 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two GPUs, one model: local AI speeds on my home cluster | Lab | Shafakat Md Golam Shobhani Sayeedi</title>
+  <meta name="description" content="How fast local AI models answer on a GTX 1660 Super server and an RTX 2080 Ti PC, including a 20B model split over both cards across the home network.">
+  <meta name="author" content="Shafakat Md Golam Shobhani Sayeedi">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Two GPUs, one model: local AI speeds on my home cluster">
+  <meta property="og:description" content="How fast local AI models answer on a GTX 1660 Super server and an RTX 2080 Ti PC, including a 20B model split over both cards across the home network.">
+  <meta property="og:url" content="https://shafakat12.github.io/shafakat/posts/2026-11-26-local-llm-benchmark.html">
+  <meta property="og:image" content="https://shafakat12.github.io/shafakat/images/profile_picture.jpeg">
+  <meta property="article:published_time" content="2026-11-26">
+  <meta property="article:author" content="Shafakat Md Golam Shobhani Sayeedi">
+
+  <meta name="theme-color" content="#102b21">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../nav.js"></script>
+  <script src="../lab.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap">
+      <span class="brand">Shafakat Sayeedi</span>
+      <nav aria-label="Main">
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"><span class="menu-icon" aria-hidden="true"></span>Menu</button>
+        <ul id="site-menu">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../experience.html">Experience</a></li>
+          <li><a href="../work.html">Work</a></li>
+          <li><a href="../lab.html" aria-current="page">Lab</a></li>
+          <li><a href="../skills.html">Skills</a></li>
+          <li><a href="../education.html">Education</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <article>
+      <header class="post-head">
+        <p class="post-meta">
+          <span class="badge type-benchmark">Benchmark</span>
+          <time class="label" datetime="2026-11-26">26 Nov 2026</time>
+          <span class="label">4 min read</span>
+        </p>
+        <h1>Two GPUs, one model: local AI speeds on my home cluster</h1>
+        <p class="post-summary">How fast my local AI models answer on my home server and gaming PC, and why a 20B model that fits on neither graphics card runs faster than a 12B model that fits on one.</p>
+        <ul class="tags">
+          <li>Benchmark</li>
+          <li>Local AI</li>
+          <li>llama.cpp</li>
+          <li>GPU</li>
+        </ul>
+        <div class="post-downloads">
+          <a class="download" href="https://github.com/shafakat12/home-ai-cluster" target="_blank" rel="noopener">Code <span class="arrow-out" aria-hidden="true">&nearr;</span></a>
+        </div>
+      </header>
+
+      <div class="post-body">
+        <dl class="setup">
+          <div><dt>Hardware</dt><dd>Server: Intel Core i5-2310 (4 threads), 16 GB RAM, NVIDIA GTX 1660 Super (6 GB), SSD. GPU PC: NVIDIA RTX 2080 Ti (11 GB). Wired 2.5 Gbit network between them.</dd></div>
+          <div><dt>Software</dt><dd>Ubuntu Server, llama.cpp build 12189 with RPC, llama-swap, running my <a href="2026-11-11-home-ai-cluster.html">Home AI Cluster</a> setup</dd></div>
+          <div><dt>What was measured</dt><dd>Answer speed (tokens per second) for a 400-token answer, after the model had loaded</dd></div>
+          <div><dt>Date tested</dt><dd><time datetime="2026-11">November 2026</time></dd></div>
+        </dl>
+
+        <h2 id="question">The question <a class="anchor" href="#question" aria-label="Link to this section">#</a></h2>
+        <p>My home AI server has a 6 GB graphics card. My gaming PC has an 11 GB one. The model I most wanted to run, gpt-oss 20B, is an 11.3 GB file, so it fits on neither card by itself. llama.cpp can split one model across the GPUs of several PCs over the network, but every token then has to travel between the two machines. I wanted to know whether that is still fast enough to use every day.</p>
+
+        <h2 id="method">How I measured <a class="anchor" href="#method" aria-label="Link to this section">#</a></h2>
+        <p>Each model was asked to write about 300 words, with the answer capped at 400 tokens. I ran each request twice and kept the second result, so the time to load the model from disk isn't counted. llama.cpp reports the speed itself in its answer:</p>
+        <pre data-lang="bash"><code>for i in 1 2; do
+  curl -s http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/json' \
+    -d '{"model":"gpt-oss-20b","messages":[{"role":"user","content":"Write about 300 words about rivers."}],"max_tokens":400}' \
+    | jq '.timings.predicted_per_second'
+done</code></pre>
+        <p>For the 20B model I repeated the test three times, because the split over the network made it vary more than the others.</p>
+
+        <h2 id="results">Results <a class="anchor" href="#results" aria-label="Link to this section">#</a></h2>
+        <div class="table-wrap">
+          <table>
+            <caption>Answer speed after loading, in tokens per second (higher is faster). Server GPU = GTX 1660 Super, GPU PC = RTX 2080 Ti.</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col" class="num">Size</th><th scope="col">Runs on</th><th scope="col" class="num">Tokens/s</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">qwen3.5-4b</th><td class="num">2.7 GB</td><td>Server GPU</td><td class="num">63</td></tr>
+              <tr><th scope="row">gemma-4-12b</th><td class="num">6.3 GB</td><td>GPU PC</td><td class="num">42</td></tr>
+              <tr><th scope="row">gpt-oss-20b</th><td class="num">11.3 GB</td><td>Both GPUs, over the network</td><td class="num best">57&ndash;71</td></tr>
+              <tr><th scope="row">team</th><td class="num">&ndash;</td><td>3 models in turn</td><td class="num">~2.5 min per answer</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <aside class="callout result">
+          <p class="callout-title">Result</p>
+          <p>The 20B model, split across two PCs, wrote 57&ndash;71 tokens per second: faster than the 12B model running on a single, faster card. Pooling GPUs over a wired network is fast enough for everyday chat.</p>
+        </aside>
+
+        <h2 id="why">Why the bigger model is faster <a class="anchor" href="#why" aria-label="Link to this section">#</a></h2>
+        <p>gpt-oss 20B is a <em>mixture-of-experts</em> model. It has about 21 billion parameters in total, but for each token it only uses around 3.6 billion of them. So once it is loaded, each token needs much less work than its size suggests, and less than a 12B model that uses all of its parameters every time. The network adds some delay to every token, which is why its speed moved between 57 and 71, but it still came out ahead.</p>
+        <p>For a sense of scale: a token is roughly three quarters of an English word, so even 42 tokens per second is about 30 words per second, several times faster than anyone reads.</p>
+        <p><em>team</em> is a different case. Two models write an answer each, then a third reads both and writes the final one, one after another. That costs about two and a half minutes per answer, so I use it only when the answer matters more than the wait.</p>
+
+        <h2 id="limits">Limits of this test <a class="anchor" href="#limits" aria-label="Link to this section">#</a></h2>
+        <ul>
+          <li>One machine of each kind, one prompt, and two or three runs per model. It shows what to expect on similar hardware, not exact numbers.</li>
+          <li>Only answer speed after loading was measured. Loading a model the first time takes longer: its file is read from disk and, for a split model, sent over the network to the other PC.</li>
+          <li>The network was wired 2.5 Gbit. Over Wi-Fi, splitting a model is much slower.</li>
+          <li>Hermes 4 14B, which I added later, hasn't been measured yet. I'll add it here when it has.</li>
+        </ul>
+
+        <h2 id="try">Try it on your own hardware <a class="anchor" href="#try" aria-label="Link to this section">#</a></h2>
+        <p>The whole setup is open source as <a href="https://github.com/shafakat12/home-ai-cluster" target="_blank" rel="noopener">home-ai-cluster on GitHub<span class="arrow-out" aria-hidden="true">&nearr;</span></a>. After installing it, run the command above on the server with your own model names to compare.</p>
+      </div>
+    </article>
+
+    <nav class="post-nav" aria-label="More posts">
+      <a class="post-back" href="../lab.html"><span aria-hidden="true">&larr;</span> Back to Lab</a>
+      <div class="post-nav-links">
+        <a class="next-link post-prev" href="2026-11-11-home-ai-cluster.html"><span class="arrow" aria-hidden="true">&larr;</span> <span class="label">Previous</span> <strong>Home AI Cluster: a private AI server built from spare PCs</strong></a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="brand">Shafakat Sayeedi</span>
+          <p>IT, Systems &amp; Branch Management</p>
+          <div class="footer-actions">
+            <a class="footer-button" href="../contact.html">Get in touch</a>
+            <a class="footer-button" href="../cv/Shafakat-Sayeedi-CV.pdf" download="Shafakat-Sayeedi-CV.pdf" type="application/pdf">Download CV</a>
+          </div>
+        </div>
+        <div>
+          <h2 class="footer-heading">Explore</h2>
+          <nav aria-label="Footer">
+            <ul class="footer-links">
+              <li><a href="../index.html">Home</a></li>
+              <li><a href="../about.html">About</a></li>
+              <li><a href="../experience.html">Experience</a></li>
+              <li><a href="../work.html">Work</a></li>
+              <li><a href="../lab.html" aria-current="page">Lab</a></li>
+              <li><a href="../skills.html">Skills</a></li>
+              <li><a href="../education.html">Education</a></li>
+              <li><a href="../contact.html">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div>
+          <h2 class="footer-heading">Contact</h2>
+          <ul class="footer-contact">
+            <li>Dhaka, Bangladesh</li>
+            <li>Phone: <a href="tel:+8801724814108">+880 1724-814108</a></li>
+            <li>Phone: <a href="tel:+8801996073758">+880 1996-073758</a></li>
+            <li>Email: <a href="mailto:golamshafakat2000@gmail.com">golamshafakat2000@gmail.com</a></li>
+            <li>GitHub: <a href="https://github.com/shafakat12">github.com/shafakat12</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shafakat Md Golam Shobhani Sayeedi. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a class="back-to-top" href="#top">Back to top <span class="arrow-up" aria-hidden="true">&uarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
